@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,7 +58,8 @@ class _LoginPageState extends State<LoginPage> {
       UserModel userModel = UserModel.fromMap(userData.data() as Map<String, dynamic>);
 
       // Go to HomePage
-      print("Log In Successful!");
+      log("Log In Successful!");
+      if(!mounted) return;
       Navigator.popUntil(context, (route) => route.isFirst);
       Navigator.pushReplacement(
         context,

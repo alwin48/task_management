@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_mgmt/screens/create_task_screen.dart';
 
 import '../widgets/task_card.dart';
 
@@ -14,10 +15,19 @@ class _TasksScreenState extends State<TasksScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tasks"),
+        title: const Text("Tasks"),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {  },
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) {
+                    return const CreateTask(restorationId: 'main');
+                  }
+              )
+          );
+        },
         backgroundColor: Colors.lightBlue,
         child: const Icon(
             Icons.ice_skating

@@ -27,27 +27,45 @@ class _SignUpPageState extends State<SignUpPage> {
     String password = passwordController.text.trim();
     String cPassword = cPasswordController.text.trim();
 
-    if(email == "" || password == "" || cPassword == "") {
-      UIHelper.showAlertDialog(context, "Incomplete Data", "Please fill all the fields");
+    if(email == "" || password == "" || cPassword == "" || dropdownvalue=="Select a Company" || level == "Select a Level") {
+      UIHelper.showAlertDialog(context, "Incomplete Data", "Please fill all the data and try again");
     }
     else if(password != cPassword) {
       UIHelper.showAlertDialog(context, "Password Mismatch", "The passwords you entered do not match!");
     }
     else {
-      signUp(email, password);
+
+      signUp(email, password, dropdownvalue, level);
     }
   }
 
-  void signUp(String email, String password) async {
+  void signUp(String email, String password, String companyName, String level) async {
     UserCredential? credential;
+    String companyId = "";
+    int lvl = int.parse(level.toString().trim());
 
     UIHelper.showLoadingDialog(context, "Creating new account..");
 
     try {
-      credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch(ex) {
-      Navigator.pop(context);
 
+      await FirebaseFirestore.instance
+          .collection("companies")
+          .where("name", isEqualTo: dropdownvalue)
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        for(var doc in querySnapshot.docs) {
+          companyId = doc["companyId"];
+          break;
+        }
+      }
+      );
+
+      credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+    } on FirebaseAuthException catch(ex) {
+
+      Navigator.pop(context);
       UIHelper.showAlertDialog(context, "An error occured", ex.message.toString());
     }
 
@@ -57,7 +75,9 @@ class _SignUpPageState extends State<SignUpPage> {
           uid: uid,
           email: email,
           fullname: "",
-          profilepic: ""
+          profilepic: "",
+          companyId: companyId,
+          level: lvl,
       );
       await FirebaseFirestore.instance.collection("users").doc(uid).set(newUser.toMap()).then((value) {
         log("New User Created!");
@@ -91,13 +111,13 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   Future<List<String>> getLevels() async {
-    late int lev;
+    late int lev=-1;
     List<String> levels = ["Select a Level"];
 
     //TODO: correct this function
     await FirebaseFirestore.instance
         .collection("companies")
-        .where("name.$dropdownvalue", isEqualTo: true)
+        .where("name", isEqualTo: dropdownvalue)
         .get()
         .then((QuerySnapshot querySnapshot) {
           for(var doc in querySnapshot.docs) {
@@ -107,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
         }
     );
 
-    for(int i=0;i<lev;i++){
+    for(int i=1;i<=lev;i++){
       levels.add(i.toString());
     }
 

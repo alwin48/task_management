@@ -17,7 +17,7 @@ class SearchPage extends StatefulWidget {
   const SearchPage({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
   @override
-  _SearchPageState createState() => _SearchPageState();
+  State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
@@ -29,7 +29,7 @@ class _SearchPageState extends State<SearchPage> {
 
     QuerySnapshot snapshot = await FirebaseFirestore.instance.collection("chatrooms").where("participants.${widget.userModel.uid}", isEqualTo: true).where("participants.${targetUser.uid}", isEqualTo: true).get();
 
-    if(snapshot.docs.length > 0) {
+    if(snapshot.docs.isNotEmpty) {
       // Fetch the existing one
       var docData = snapshot.docs[0].data();
       ChatRoomModel existingChatroom = ChatRoomModel.fromMap(docData as Map<String, dynamic>);
@@ -61,11 +61,11 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Search"),
+        title: const Text("Search"),
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 20,
             vertical: 10,
           ),
@@ -74,22 +74,22 @@ class _SearchPageState extends State<SearchPage> {
 
               TextField(
                 controller: searchController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: "Email Address"
                 ),
               ),
 
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
 
               CupertinoButton(
                 onPressed: () {
                   setState(() {});
                 },
                 color: Theme.of(context).colorScheme.secondary,
-                child: Text("Search"),
+                child: const Text("Search"),
               ),
 
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
 
               StreamBuilder(
                   stream: FirebaseFirestore.instance.collection("users").where("email", isEqualTo: searchController.text).where("email", isNotEqualTo: widget.userModel.email).snapshots(),
@@ -98,7 +98,7 @@ class _SearchPageState extends State<SearchPage> {
                       if(snapshot.hasData) {
                         QuerySnapshot dataSnapshot = snapshot.data as QuerySnapshot;
 
-                        if(dataSnapshot.docs.length > 0) {
+                        if(dataSnapshot.docs.isNotEmpty) {
                           Map<String, dynamic> userMap = dataSnapshot.docs[0].data() as Map<String, dynamic>;
 
                           UserModel searchedUser = UserModel.fromMap(userMap);
@@ -108,6 +108,7 @@ class _SearchPageState extends State<SearchPage> {
                               ChatRoomModel? chatroomModel = await getChatroomModel(searchedUser);
 
                               if(chatroomModel != null) {
+                                if(!mounted) return;
                                 Navigator.pop(context);
                                 Navigator.push(context, MaterialPageRoute(
                                     builder: (context) {
@@ -127,23 +128,23 @@ class _SearchPageState extends State<SearchPage> {
                             ),
                             title: Text(searchedUser.fullname!),
                             subtitle: Text(searchedUser.email!),
-                            trailing: Icon(Icons.keyboard_arrow_right),
+                            trailing: const Icon(Icons.keyboard_arrow_right),
                           );
                         }
                         else {
-                          return Text("No results found!");
+                          return const Text("No results found!");
                         }
 
                       }
                       else if(snapshot.hasError) {
-                        return Text("An error occured!");
+                        return const Text("An error occured!");
                       }
                       else {
-                        return Text("No results found!");
+                        return const Text("No results found!");
                       }
                     }
                     else {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     }
                   }
               ),
