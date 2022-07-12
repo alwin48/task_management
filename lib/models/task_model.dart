@@ -1,4 +1,3 @@
-import 'package:task_mgmt/models/user_model.dart';
 
 class TaskModel {
   String? uid;
@@ -16,10 +15,11 @@ class TaskModel {
     uid = map["uid"];
     title = map["title"];
     description = map["description"];
-    dateCreated = map["dateCreated"];
-    dueDate = map["dueDate"];
+    dateCreated = map["dateCreated"].toDate();
+    dueDate = map["dueDate"].toDate();
     manager = map["manager"];
-    participantsUid = map["participantsUid"];
+    List<dynamic> temp = map["participantsUid"];
+    participantsUid = temp.map((e)=>e.toString()).toList();
   }
 
   Map<String, dynamic> toMap() {
