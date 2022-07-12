@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:task_mgmt/screens/search_screen.dart';
-import '../models/chatroom_model.dart';
-import '../models/user_model.dart';
-import '../utils/firebase_helper.dart';
+import 'package:task_mgmt/screens/chat/search_screen.dart';
+import '../../models/chatroom_model.dart';
+import '../../models/user_model.dart';
+import '../../utils/firebase_helper.dart';
 import 'chatroom_screen.dart';
-import 'auth/login_screen.dart';
+import '../auth/login_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   final UserModel userModel;

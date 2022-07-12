@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:task_mgmt/screens/tasks_screen.dart';
+import 'package:task_mgmt/screens/task/tasks_screen.dart';
 
 import '../models/user_model.dart';
-import 'chat_screen.dart';
+import 'chat/chat_screen.dart';
 
 class Dashboard extends StatefulWidget {
   final UserModel userModel;

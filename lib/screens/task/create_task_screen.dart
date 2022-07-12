@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:task_mgmt/main.dart';
 import 'package:task_mgmt/models/task_model.dart';
 import 'package:task_mgmt/models/user_model.dart';
-import 'package:task_mgmt/screens/add_participants.dart';
+import 'package:task_mgmt/screens/task/add_participants.dart';
 import 'package:task_mgmt/utils/firebase_helper.dart';
 
 class CreateTask extends StatefulWidget {

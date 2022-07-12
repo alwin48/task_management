@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:task_mgmt/models/user_model.dart';
-import 'package:task_mgmt/screens/create_task_screen.dart';
+import 'package:task_mgmt/screens/task/create_task_screen.dart';
 
-import '../models/task_model.dart';
-import '../widgets/task_card.dart';
+import '../../models/task_model.dart';
+import '../../widgets/task_card.dart';
+import '../auth/login_screen.dart';
 
 class TasksScreen extends StatefulWidget {
   final UserModel userModel;
@@ -21,6 +23,24 @@ class _TasksScreenState extends State<TasksScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tasks"),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              if(!mounted) return;
+              Navigator.popUntil(context, (route) => route.isFirst);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) {
+                      return const LoginPage();
+                    }
+                ),
+              );
+            },
+            icon: const Icon(Icons.exit_to_app),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -35,7 +55,7 @@ class _TasksScreenState extends State<TasksScreen> {
         },
         backgroundColor: Colors.lightBlue,
         child: const Icon(
-            Icons.ice_skating
+            Icons.add_task
         ),
       ),
       body: Column(

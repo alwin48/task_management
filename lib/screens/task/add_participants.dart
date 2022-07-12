@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task_mgmt/models/user_model.dart';
 
-import '../models/chatroom_model.dart';
-import '../utils/firebase_helper.dart';
+import '../../models/chatroom_model.dart';
+import '../../utils/firebase_helper.dart';
 
 class AddParticipants extends StatefulWidget {
 

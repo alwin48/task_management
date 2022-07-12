@@ -5,9 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
-import '../models/chatroom_model.dart';
-import '../models/user_model.dart';
+import '../../main.dart';
+import '../../models/chatroom_model.dart';
+import '../../models/user_model.dart';
 import 'chatroom_screen.dart';
 
 class SearchPage extends StatefulWidget {
