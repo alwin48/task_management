@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task_mgmt/models/user_model.dart';
@@ -6,7 +8,9 @@ import '../models/chatroom_model.dart';
 import '../utils/firebase_helper.dart';
 
 class AddParticipants extends StatefulWidget {
-  const AddParticipants({Key? key}) : super(key: key);
+
+  final int userLength;
+  const AddParticipants({Key? key, required this.userLength}) : super(key: key);
 
   @override
   State<AddParticipants> createState() => _AddParticipantsState();
@@ -22,6 +26,8 @@ class _AddParticipantsState extends State<AddParticipants> {
   void initState() {
 
     loadList();
+
+
     super.initState();
   }
 
@@ -38,10 +44,13 @@ class _AddParticipantsState extends State<AddParticipants> {
             userList.add(UserModel.fromMap(doc.data() as Map<String, dynamic>));
           }
     });
+
+    log(check.toString());
     return userList;
   }
 
-  bool val=false;
+  late List<bool> check = List<bool>.generate(widget.userLength, (index) => false);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,14 +75,17 @@ class _AddParticipantsState extends State<AddParticipants> {
                     title: Text(user.fullname!),
                     subtitle: Text(user.email!),
                     trailing: Checkbox(
-                      checkColor: Colors.red,
-                      value: val,
+                      checkColor: Colors.white,
+                      value: check[index],
                       onChanged: (bool? value) {
                         setState(() {
-                          val = value!;
+                          check[index] = !check[index];
                         });
                         if (value!) {
-                          selectedList.add(user.uid!);
+                          if(!selectedList.contains(user.uid)){
+                            selectedList.add(user.uid!);
+                          }
+                          log(selectedList.toString());
                         } else {
                           selectedList.remove(user.uid);
                         }

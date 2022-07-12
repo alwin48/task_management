@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:task_mgmt/main.dart';
 import 'package:task_mgmt/models/task_model.dart';
 import 'package:task_mgmt/models/user_model.dart';
 import 'package:task_mgmt/screens/add_participants.dart';
+import 'package:task_mgmt/utils/firebase_helper.dart';
 
 class CreateTask extends StatefulWidget {
 
@@ -19,9 +22,12 @@ class CreateTask extends StatefulWidget {
 
 class _CreateTaskState extends State<CreateTask> with RestorationMixin {
 
+
   String dateButtonText = 'Select a due date';
   TextEditingController taskNameController = TextEditingController();
   TextEditingController taskDescriptionController = TextEditingController();
+
+
 
   @override
   String? get restorationId => widget.restorationId;
@@ -77,6 +83,14 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
   }
 
   late List<String> participants;
+  
+  int userLength = 0;
+
+  @override
+  void initState() {
+    getlength();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,10 +142,11 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
 
                   OutlinedButton(
                       onPressed: () async {
+                        log(userLength.toString());
                         participants = await Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) {
-                              return const AddParticipants();
+                              return AddParticipants(userLength: userLength);
                             }
                             )
                         ) as List<String>;
@@ -168,5 +183,9 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
           )
       ),
     );
+  }
+
+  void getlength() async {
+    userLength = await FirebaseHelper.getUsersLength();
   }
 }

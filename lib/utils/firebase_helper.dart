@@ -15,4 +15,14 @@ class FirebaseHelper {
     return userModel;
   }
 
+  static Future<int> getUsersLength() async {
+    int length = 0;
+    await FirebaseFirestore.instance.collection("users").get().then((QuerySnapshot querySnapshot) {
+      for (var _ in querySnapshot.docs) {
+        length++;
+      }
+    });
+    return length;
+  }
+
 }
