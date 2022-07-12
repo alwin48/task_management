@@ -56,7 +56,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
-      const TasksScreen(),
+      TasksScreen(userModel: widget.userModel),
       const Center(
         child: Text(
           'Settings',

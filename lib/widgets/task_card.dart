@@ -16,8 +16,8 @@ class _TaskCardState extends State<TaskCard> {
       child: Column(
         children: [
           ListTile(
-            leading: Icon(Icons.arrow_drop_down_circle),
-            title: const Text('Task 1'),
+            leading: const Icon(Icons.arrow_drop_down_circle),
+            title: const Text('Task 2'),
             subtitle: Text(
               'Secondary Text',
               style: TextStyle(color: Colors.black.withOpacity(0.6)),

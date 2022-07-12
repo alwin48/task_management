@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:task_mgmt/models/user_model.dart';
 import 'package:task_mgmt/screens/create_task_screen.dart';
 
 import '../widgets/task_card.dart';
 
 class TasksScreen extends StatefulWidget {
-  const TasksScreen({Key? key}) : super(key: key);
+  final UserModel userModel;
+
+  const TasksScreen({Key? key, required this.userModel}) : super(key: key);
 
   @override
   State<TasksScreen> createState() => _TasksScreenState();
@@ -23,7 +26,7 @@ class _TasksScreenState extends State<TasksScreen> {
               context,
               MaterialPageRoute(
                   builder: (context) {
-                    return const CreateTask(restorationId: 'main');
+                    return CreateTask(restorationId: 'main', userModel: widget.userModel);
                   }
               )
           );
@@ -34,7 +37,7 @@ class _TasksScreenState extends State<TasksScreen> {
         ),
       ),
       body: Column(
-        children: const [
+        children: [
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -47,6 +50,7 @@ class _TasksScreenState extends State<TasksScreen> {
           ),
 
           TaskCard(),
+
         ],
       ),
     );

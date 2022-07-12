@@ -10,11 +10,24 @@ class AddParticipants extends StatefulWidget {
 
   @override
   State<AddParticipants> createState() => _AddParticipantsState();
+
+
 }
 
 class _AddParticipantsState extends State<AddParticipants> {
-  List<UserModel> selectedList = [];
+  List<String> selectedList = [];
   List<UserModel> userList = [];
+
+  @override
+  void initState() {
+
+    loadList();
+    super.initState();
+  }
+
+  loadList() async {
+    await getUsers();
+  }
 
   Future<List<UserModel>> getUsers() async {
     await FirebaseFirestore.instance
@@ -28,43 +41,53 @@ class _AddParticipantsState extends State<AddParticipants> {
     return userList;
   }
 
-
+  bool val=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: FutureBuilder(
-        future: getUsers(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("users").snapshots(),
         builder: (context, snapshot) {
-          if(snapshot.hasData){
+          if(snapshot.hasData) {
             return ListView.builder(
-              itemCount: userList.length,
-              itemBuilder: (context, index) {
-                // return ParticipantItem(user: userList[index]);
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(userList[index].profilepic!),
-                    backgroundColor: Colors.grey[500],
-                  ),
-                  title: Text(userList[index].fullname!),
-                  subtitle: Text(userList[index].email!),
-                  trailing: Checkbox(
-                    checkColor: Colors.white,
-                    value: false,
-                    onChanged: (bool? value) {
-                      if(value!){
-                        selectedList.add(userList[index]);
-                      } else {
-                        selectedList.remove(userList[index]);
-                      }
-                    },
-                  ),
-                );
-              }
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  UserModel user = UserModel.fromMap(snapshot.data!.docs[index].data());
+                  // return ParticipantItem(user: userList[index]);
+
+                  return ListTile(
+
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(
+                          user.profilepic!),
+                      backgroundColor: Colors.grey[500],
+                    ),
+                    title: Text(user.fullname!),
+                    subtitle: Text(user.email!),
+                    trailing: Checkbox(
+                      checkColor: Colors.red,
+                      value: val,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          val = value!;
+                        });
+                        if (value!) {
+                          selectedList.add(user.uid!);
+                        } else {
+                          selectedList.remove(user.uid);
+                        }
+                      },
+                    ),
+                  );
+                }
             );
+
           }
-          return const Center(child: CircularProgressIndicator());
-        },
+          else {
+            return const CircularProgressIndicator();
+          }
+        }
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

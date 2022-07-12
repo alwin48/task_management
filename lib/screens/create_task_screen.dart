@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:task_mgmt/main.dart';
@@ -8,8 +9,9 @@ import 'package:task_mgmt/screens/add_participants.dart';
 class CreateTask extends StatefulWidget {
 
   final String? restorationId;
+  final UserModel userModel;
 
-  const CreateTask({Key? key, required this.restorationId}) : super(key: key);
+  const CreateTask({Key? key, required this.userModel, required this.restorationId}) : super(key: key);
 
   @override
   State<CreateTask> createState() => _CreateTaskState();
@@ -74,7 +76,7 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
     }
   }
 
-  late List<UserModel> participants;
+  late List<String> participants;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +134,7 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
                               return const AddParticipants();
                             }
                             )
-                        ) as List<UserModel>;
+                        ) as List<String>;
                       },
                       child: const Text("Add participants")),
 
@@ -143,13 +145,17 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
                       child: const Text("Create Task"),
                       onPressed: () {
                         TaskModel task = TaskModel(
+                            participantsUid: participants,
                             uid: uuid.v1(),
                             title: taskNameController.text.trim(),
                             description: taskDescriptionController.text.trim(),
                             dateCreated: DateTime.now(),
+                            manager: widget.userModel.uid,
                             dueDate: _selectedDate.value
                         );
 
+                        FirebaseFirestore.instance.collection("tasks").doc(task.uid).set(task.toMap());
+                        Navigator.pop(context);
 
                       }
                   ),
