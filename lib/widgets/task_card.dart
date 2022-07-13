@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_mgmt/main.dart';
 import 'package:task_mgmt/models/task_model.dart';
+import 'package:task_mgmt/models/task_session_model.dart';
 import 'package:task_mgmt/screens/task/task_detail.dart';
+
+import '../screens/task/end_task_session.dart';
 
 class TaskCard extends StatefulWidget {
   final TaskModel task;
@@ -12,17 +16,21 @@ class TaskCard extends StatefulWidget {
 }
 
 class _TaskCardState extends State<TaskCard> {
+
+  String startButtonText = "Start";
+  TaskSessionModel taskSession = TaskSessionModel(uid: uuid.v1());
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return TaskDetail(task: widget.task);
-            }
-          )
+            context,
+            MaterialPageRoute(
+                builder: (context) {
+                  return TaskDetail(task: widget.task);
+                }
+            )
         );
       },
       child: Card(
@@ -30,10 +38,11 @@ class _TaskCardState extends State<TaskCard> {
         child: Column(
           children: [
             ListTile(
-              leading: const Icon(Icons.arrow_drop_down_circle),
+              leading: const Icon(Icons.task),
               title: Text(widget.task.title!),
               subtitle: Text(
-                'Due Date: ${widget.task.dueDate?.day}/${widget.task.dueDate?.month}/${widget.task.dueDate?.year}',
+                'Due Date: ${widget.task.dueDate?.day}/${widget.task.dueDate
+                    ?.month}/${widget.task.dueDate?.year}',
                 style: TextStyle(color: Colors.black.withOpacity(0.6)),
               ),
             ),
@@ -50,10 +59,26 @@ class _TaskCardState extends State<TaskCard> {
                 TextButton(
                   // color: const Color(0xFF6200EE),
                   onPressed: () {
-                    // Perform some action
+                    taskSession.startTime = DateTime.now();
+                    taskSession.taskUid = widget.task.uid;
+                    setState(() {
+                      startButtonText = "Started session";
+                    });
                   },
-                  child: const Text('Start'),
+                  child: Text(startButtonText),
                 ),
+                TextButton(
+                    onPressed: () async {
+                      taskSession.endTime = DateTime.now();
+                      setState((){
+                        startButtonText = "Start";
+                      });
+                      await Navigator.push(context, MaterialPageRoute(builder: (context){
+                        return EndTaskSession(taskSession: taskSession);
+                      })
+                      );
+                    },
+                    child: const Text("End")),
                 TextButton(
                   // textColor: const Color(0xFF6200EE),
                   onPressed: () {

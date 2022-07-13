@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:task_mgmt/screens/performance.dart';
 import 'package:task_mgmt/screens/task/tasks_screen.dart';
 
 import '../models/user_model.dart';
@@ -57,10 +58,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
       TasksScreen(userModel: widget.userModel),
-      const Center(
-        child: Text(
-          'Settings',
-          style: optionStyle,
+      SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SimpleBarChart.withRandomData(),
+          ),
         ),
       ),
       ChatScreen(userModel: widget.userModel, firebaseUser: widget.firebaseUser),
@@ -77,8 +80,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: Icon(Icons.person),
+            label: 'Performance',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
@@ -86,7 +89,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.blue[800],
         onTap: _onItemTapped,
       ),
     );
