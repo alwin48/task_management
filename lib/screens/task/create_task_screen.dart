@@ -146,7 +146,7 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
                         participants = await Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) {
-                              return AddParticipants(userLength: userLength);
+                              return AddParticipants(userLength: userLength, userModel: widget.userModel);
                             }
                             )
                         ) as List<String>;
@@ -166,7 +166,8 @@ class _CreateTaskState extends State<CreateTask> with RestorationMixin {
                             description: taskDescriptionController.text.trim(),
                             dateCreated: DateTime.now(),
                             manager: widget.userModel.uid,
-                            dueDate: _selectedDate.value
+                            dueDate: _selectedDate.value,
+                            managerLevel: widget.userModel.level
                         );
 
                         FirebaseFirestore.instance.collection("tasks").doc(task.uid).set(task.toMap());

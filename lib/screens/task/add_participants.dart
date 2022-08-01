@@ -8,9 +8,9 @@ import '../../models/chatroom_model.dart';
 import '../../utils/firebase_helper.dart';
 
 class AddParticipants extends StatefulWidget {
-
+  final UserModel userModel;
   final int userLength;
-  const AddParticipants({Key? key, required this.userLength}) : super(key: key);
+  const AddParticipants({Key? key, required this.userLength, required this.userModel}) : super(key: key);
 
   @override
   State<AddParticipants> createState() => _AddParticipantsState();
@@ -56,7 +56,7 @@ class _AddParticipantsState extends State<AddParticipants> {
     return Scaffold(
       appBar: AppBar(),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("users").snapshots(),
+        stream: FirebaseFirestore.instance.collection("users").where("level", isGreaterThan: widget.userModel.level).snapshots(),
         builder: (context, snapshot) {
           if(snapshot.hasData) {
             return ListView.builder(
