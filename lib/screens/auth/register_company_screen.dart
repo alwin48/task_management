@@ -27,6 +27,8 @@ class _RegisterCompanyState extends State<RegisterCompany> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController cPasswordController = TextEditingController();
 
+  late CompanyModel company;
+
   void checkValues() {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
@@ -39,16 +41,13 @@ class _RegisterCompanyState extends State<RegisterCompany> {
       UIHelper.showAlertDialog(context, "Password Mismatch", "The passwords you entered do not match!");
     }
     else {
-
       signUp(email, password);
     }
   }
 
   void signUp(String email, String password) async {
     UserCredential? credential;
-    String companyId = "";
-
-    UIHelper.showLoadingDialog(context, "Creating new account..");
+    String? companyId = company.companyId;
 
     try {
 
@@ -69,15 +68,16 @@ class _RegisterCompanyState extends State<RegisterCompany> {
         fullname: "",
         profilepic: "",
         companyId: companyId,
+        isAdmin: true
       );
       await FirebaseFirestore.instance.collection("users").doc(uid).set(newUser.toMap()).then((value) {
         log("New User Created!");
-        Navigator.popUntil(context, (route) => route.isFirst);
+        // Navigator.popUntil(context, (route) => route.isFirst);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) {
-                return CompleteCompanyRegistration(userModel: newUser, firebaseUser: credential!.user!);
+                return CompleteCompanyRegistration(userModel: newUser, firebaseUser: credential!.user!, company: company);
               }
           ),
         );
@@ -95,8 +95,10 @@ class _RegisterCompanyState extends State<RegisterCompany> {
     int noOfLevels = int.parse(noOfLevelsController.text.trim());
 
 
-    CompanyModel company = CompanyModel(companyId: companyId,name: companyName, noOfLevels: noOfLevels, ceoEmail: email);
+    company = CompanyModel(companyId: companyId,name: companyName, noOfLevels: noOfLevels, ceoEmail: email);
     await FirebaseFirestore.instance.collection("companies").doc(company.companyId).set(company.toMap());
+
+    checkValues();
 
   }
 
@@ -181,7 +183,6 @@ class _RegisterCompanyState extends State<RegisterCompany> {
                     CupertinoButton(
                       onPressed: () {
                         registerCompany();
-                        checkValues();
                       },
                       color: Theme.of(context).colorScheme.secondary,
                       child: const Text("Register"),

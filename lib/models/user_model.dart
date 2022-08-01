@@ -5,8 +5,9 @@ class UserModel {
   String? profilepic;
   int? level;
   String? companyId;
+  bool? isAdmin = false;
 
-  UserModel({this.uid, this.fullname, this.email, this.profilepic, this.level, this.companyId});
+  UserModel({this.uid, this.fullname, this.email, this.profilepic, this.level, this.companyId, this.isAdmin});
 
   UserModel.fromMap(Map<String, dynamic> map) {
     uid = map["uid"];
@@ -15,6 +16,7 @@ class UserModel {
     profilepic = map["profilepic"];
     companyId = map["companyId"];
     level = map["level"];
+    isAdmin = map["isAdmin"];
   }
 
   Map<String, dynamic> toMap() {
@@ -25,6 +27,7 @@ class UserModel {
       "profilepic": profilepic,
       "level": level,
       "companyId": companyId,
+      "isAdmin": isAdmin,
     };
   }
 }

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:task_mgmt/models/user_model.dart';
 import 'package:task_mgmt/screens/task/create_task_screen.dart';
 
+import '../../models/company_model.dart';
 import '../../models/task_model.dart';
 import '../../widgets/task_card.dart';
+import '../add_new_employee.dart';
 import '../auth/login_screen.dart';
 
 class TasksScreen extends StatefulWidget {
@@ -18,9 +20,71 @@ class TasksScreen extends StatefulWidget {
 }
 
 class _TasksScreenState extends State<TasksScreen> {
+
+  late CompanyModel company;
+
+  setCompany() async {
+    DocumentSnapshot companydoc = await FirebaseFirestore.instance.collection("companies").doc(widget.userModel.companyId).get();
+    company = CompanyModel.fromMap(companydoc.data() as Map<String, dynamic>);
+  }
+
+  @override
+  void initState() {
+    setCompany();
+    super.initState();
+  }
+
+  getDrawer() {
+    if(widget.userModel.isAdmin!=null){
+      if(widget.userModel.isAdmin!) {
+        return Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text('Admin Options'),
+              ),
+              ListTile(
+                title: const Text('Edit Profile'),
+                onTap: () {
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text("Add New Employee"),
+                onTap: () {
+
+                  // Update the state of the app
+                  // ...
+                  // Then close the drawer
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return AddNewEmployee(company: company);
+                  }));
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: getDrawer(),
       appBar: AppBar(
         title: const Text("Tasks"),
         actions: [

@@ -1,9 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:task_mgmt/screens/performance.dart';
 import 'package:task_mgmt/screens/task/tasks_screen.dart';
 
+import '../models/company_model.dart';
 import '../models/user_model.dart';
+import 'add_new_employee.dart';
 import 'chat/chat_screen.dart';
 
 class Dashboard extends StatefulWidget {
@@ -53,6 +56,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       _selectedIndex = index;
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {

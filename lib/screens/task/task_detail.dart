@@ -7,6 +7,9 @@ import 'package:task_mgmt/models/task_session_model.dart';
 import 'package:task_mgmt/models/user_model.dart';
 import 'package:task_mgmt/utils/firebase_helper.dart';
 
+import '../../main.dart';
+import 'end_task_session.dart';
+
 class TaskDetail extends StatefulWidget {
 
   final TaskModel task;
@@ -28,10 +31,13 @@ class _TaskDetailState extends State<TaskDetail> {
           "Participants",
           style: TextStyle(
             fontSize: 24,
+            color: Colors.blue,
             fontWeight: FontWeight.bold,
 
           ),
         ),
+
+        SizedBox(height: 20,),
 
         Flexible(
           child: ListView.builder(
@@ -43,13 +49,20 @@ class _TaskDetailState extends State<TaskDetail> {
                       if(user.hasData) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  user.data!.profilepic!),
+                          child: Container(
+                            color: Colors.blue[100],
+                            child: ListTile(
+                              // shape: RoundedRectangleBorder(
+                              //   side: BorderSide(color: Colors.black, width: 1),
+                              //   borderRadius: BorderRadius.circular(5),
+                              // ),
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    user.data!.profilepic!),
+                              ),
+                              title: Text(user.data!.fullname!),
+                              onTap: () {},
                             ),
-                            title: Text(user.data!.fullname!),
-                            onTap: () {},
                           ),
                         );
                       }
@@ -64,6 +77,9 @@ class _TaskDetailState extends State<TaskDetail> {
       ],
     ),
   );
+
+  String startButtonText = "Start Session";
+  TaskSessionModel taskSession = TaskSessionModel(uid: uuid.v1());
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +117,7 @@ class _TaskDetailState extends State<TaskDetail> {
 
                   SizedBox(height: 10,),
 
-                  Text(
+                  Text("Task description: "+
                     widget.task.description!,
 
                   ),
@@ -122,7 +138,7 @@ class _TaskDetailState extends State<TaskDetail> {
                   Text(
                     "Date created: ${widget.task.dateCreated!.day}/${widget.task.dateCreated!.month}/${widget.task.dateCreated!.year}",
                     style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.blue[800]
                     ),
@@ -135,11 +151,24 @@ class _TaskDetailState extends State<TaskDetail> {
                     children: [
                       ElevatedButton(
                         onPressed: (){
-
+                          taskSession.startTime = DateTime.now();
+                          taskSession.taskUid = widget.task.uid;
+                          setState(() {
+                            startButtonText = "Started session";
+                          });
                         },
-                        child: Text("Start Session")
+                        child: Text(startButtonText)
                       ),
-                      ElevatedButton(onPressed: (){}, child: Text("End Session")),
+                      ElevatedButton(onPressed: () async{
+                        taskSession.endTime = DateTime.now();
+                        setState((){
+                          startButtonText = "Start";
+                        });
+                        await Navigator.push(context, MaterialPageRoute(builder: (context){
+                          return EndTaskSession(taskSession: taskSession);
+                        })
+                        );
+                      }, child: Text("End Session")),
                       ElevatedButton(onPressed: (){}, child: Text("Edit Task"))
                     ],
                   )
@@ -152,7 +181,18 @@ class _TaskDetailState extends State<TaskDetail> {
               padding: EdgeInsets.all(8),
               child: Column(
                 children: [
-                  Text("Task Sessions"),
+                  SizedBox(height: 20,),
+                  Text(
+                      "Task Sessions",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue
+                    ),
+                  ),
+
+                  SizedBox(height: 20,),
+
                   Flexible(
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance.collection("tasks").doc(widget.task.uid).collection("session").snapshots(),
@@ -169,7 +209,34 @@ class _TaskDetailState extends State<TaskDetail> {
                               //   subtitle: Text(taskSession.notes!),
                               // );
                               return Center(
-                                child: Text(taskSession.notes!),
+                                child: Card(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      ListTile(
+                                        leading: Icon(Icons.task),
+                                        title: Text('Task Session: ${index+1}'),
+                                        subtitle: Text('Notes: ${taskSession.notes}'),
+                                      ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            "Start Time: ${taskSession.startTime}",
+                                            style: TextStyle(color: Colors.blue),
+                                          ),
+                                          SizedBox(height: 12,),
+                                          Text(
+                                            "End Time: ${taskSession.endTime}",
+                                            style: TextStyle(color: Colors.blue),
+                                          ),
+                                          SizedBox(height: 8,)
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               );
                             },
                           );

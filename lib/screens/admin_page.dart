@@ -1,16 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:task_mgmt/models/company_model.dart';
 import 'package:task_mgmt/models/user_model.dart';
 import 'package:task_mgmt/screens/add_new_employee.dart';
 
 class AdminPage extends StatefulWidget {
-  const AdminPage({Key? key, required UserModel userModel, required User firebaseUser}) : super(key: key);
+
+  final UserModel userModel;
+  final User firebaseUser;
+
+
+  const AdminPage({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
 
   @override
   State<AdminPage> createState() => _AdminPageState();
 }
 
 class _AdminPageState extends State<AdminPage> {
+
+  late CompanyModel company;
+
+  setCompany() async {
+    DocumentSnapshot companydoc = await FirebaseFirestore.instance.collection("companies").doc(widget.userModel.companyId).get();
+    company = CompanyModel.fromMap(companydoc.data() as Map<String, dynamic>);
+  }
+
+  @override
+  void initState() {
+    setCompany();
+    super.initState();
+  }
 
   Widget body = Text("My Page");
 
@@ -52,7 +72,7 @@ class _AdminPageState extends State<AdminPage> {
             ListTile(
               title: const Text("Add New Employee"),
               onTap: () {
-                body = AddNewEmployee();
+                body = AddNewEmployee(company: company);
                 setState(() {
 
                 });

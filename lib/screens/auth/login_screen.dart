@@ -10,6 +10,7 @@ import 'package:task_mgmt/screens/auth/signup_screen.dart';
 
 import '../../models/user_model.dart';
 import '../../utils/ui_helper.dart';
+import '../admin_page.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -65,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
         context,
         MaterialPageRoute(
             builder: (context) {
-              return Dashboard(userModel: userModel, firebaseUser: credential!.user!);
+                return Dashboard(userModel: userModel, firebaseUser: credential!.user!);
             }
         ),
       );

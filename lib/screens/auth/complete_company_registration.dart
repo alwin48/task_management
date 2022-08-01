@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:task_mgmt/models/company_model.dart';
 import 'package:task_mgmt/screens/admin_page.dart';
 
 import '../../models/user_model.dart';
@@ -17,8 +18,9 @@ import '../dashboard.dart';
 class CompleteCompanyRegistration extends StatefulWidget {
   final UserModel userModel;
   final User firebaseUser;
+  final CompanyModel company;
 
-  const CompleteCompanyRegistration({Key? key, required this.userModel, required this.firebaseUser}) : super(key: key);
+  const CompleteCompanyRegistration({Key? key, required this.userModel, required this.firebaseUser, required this.company}) : super(key: key);
 
   @override
   State<CompleteCompanyRegistration> createState() => _CompleteCompanyRegistrationState();
