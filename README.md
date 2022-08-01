@@ -2,15 +2,6 @@
 
 A new Flutter project.
 
-## Getting Started
+# introduction
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The task management and performance analysis system are an automated support tool to be used by managers, task heads and employees of an MNC. Currently all work tasks requests of a company are handled manually over the telephone, emails etc. The task management system automates the process by streamlining the handling of the work tasks requests thereby reducing the manual intervention. There will be three different types of users that use this system –managers, task heads, employees (the various levels in a company) that are assigned the work tasks. When a manager places a work task, employees get assigned to work tasks. The work order will include all necessary information including the availability schedule of the faculty member. Administrative staff then assigns the work task to appropriate employees. 
